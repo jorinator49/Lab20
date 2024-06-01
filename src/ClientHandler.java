@@ -2,6 +2,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.sql.SQLException;
 
 public class ClientHandler{
     private Server myServer;
@@ -29,8 +30,11 @@ public class ClientHandler{
                 }
                 catch (IOException e) {
                     e.printStackTrace();
-                }
-                finally {
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                } finally {
                     closeConnection();
                 }
             }).start();
@@ -39,7 +43,7 @@ public class ClientHandler{
         }
     }
 
-    public void authentication() throws IOException{
+    public void authentication() throws IOException, SQLException, ClassNotFoundException {
         while (true){
             String str = in.readUTF();
             if (str.startsWith("/auth")){
